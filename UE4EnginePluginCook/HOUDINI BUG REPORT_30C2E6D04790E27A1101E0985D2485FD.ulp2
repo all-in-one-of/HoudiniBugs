@@ -1,0 +1,121 @@
+{
+	"Version": 27,
+	"Id": "30C2E6D04790E27A1101E0985D2485FD",
+	"Name": "Houdini Bug Report",
+	"Description": "",
+	"BuildConfiguration": 3,
+	"ProjectSpecified": true,
+	"ShareableProjectPath": "E:/code/HoudiniBugs/UE4EnginePluginCook/UE4EnginePluginCook.uproject",
+	"CookConfiguration": 3,
+	"CookIncremental": false,
+	"CookOptions": "",
+	"CookMode": 1,
+	"CookUnversioned": true,
+	"CookedCultures": [
+		"en"
+	],
+	"CookedMaps": [
+		"NewMap"
+	],
+	"CookedPlatforms": [
+		"WindowsNoEditor"
+	],
+	"DeployStreamingServer": false,
+	"DeployWithUnrealPak": false,
+	"DeployedDeviceGroupId": "9342727D43EC1FFBB43247B6FA465F39",
+	"DeploymentMode": 1,
+	"HideFileServerWindow": false,
+	"LaunchMode": 2,
+	"PackagingMode": 0,
+	"PackageDir": "",
+	"BuildGame": true,
+	"ForceClose": true,
+	"Timeout": 60,
+	"Compressed": true,
+	"EncryptIniFiles": false,
+	"ForDistribution": false,
+	"DeployPlatform": "None",
+	"NumCookersToSpawn": 0,
+	"SkipCookingEditorContent": false,
+	"DeployIncremental": false,
+	"GeneratePatch": false,
+	"AddPatchLevel": false,
+	"StageBaseReleasePaks": false,
+	"DLCIncludeEngineContent": false,
+	"CreateReleaseVersion": false,
+	"CreateReleaseVersionName": "",
+	"BasedOnReleaseVersionName": "",
+	"CreateDLC": false,
+	"DLCName": "",
+	"GenerateChunks": false,
+	"GenerateHttpChunkData": false,
+	"HttpChunkDataDirectory": "",
+	"HttpChunkDataReleaseName": "",
+	"Archive": false,
+	"ArchiveDirectory": "",
+	"AdditionalCommandLineParameters": "-verbose",
+	"IncludePrerequisites": false,
+	"DefaultRole":
+	{
+		"AssignedDevice": "",
+		"CommandLine": "",
+		"DeviceId": "",
+		"InitialCulture": "en",
+		"InitialMapName": "NewMap",
+		"Name": "DefaultRole",
+		"InstanceType": 2,
+		"VsyncEnabled": false
+	},
+	"scripts": [
+		{
+			"script": "BuildCookRun",
+			"project": "E:/code/HoudiniBugs/UE4EnginePluginCook/UE4EnginePluginCook.uproject",
+			"noP4": true,
+			"nocompile": true,
+			"nocompileeditor": true,
+			"ue4exe": "",
+			"utf8output": true,
+			"clientconfig": [
+				"Development"
+			],
+			"serverconfig": [
+				"Development"
+			],
+			"platform": [
+				"Win64"
+			],
+			"targetplatform": "Win64",
+			"cmdline":
+			{
+				"": "NewMap",
+				"messaging": true
+			},
+			"device": [],
+			"addcmdline":
+			{
+				"sessionid": "FCA6133F40B218DEF3FDF7AE56670762",
+				"sessionowner": "doug",
+				"sessionname": "Houdini Bug Report"
+			},
+			"map": [
+				"NewMap"
+			],
+			"build": true,
+			"cook": true,
+			"unversionedcookedcontent": true,
+			"pak": false,
+			"generatepatch": false,
+			"manifests": false,
+			"iterativecooking": false,
+			"iteratesharedcookedbuild": false,
+			"skipcookingeditorcontent": false,
+			"compressed": true,
+			"EncryptIniFiles": false,
+			"ForDistribution": false,
+			"iterativedeploy": false,
+			"stage": true,
+			"deploy": true,
+			"run": true
+		}
+	]
+}
