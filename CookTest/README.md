@@ -18,6 +18,12 @@ That is 122.55 seconds longer (2 minutes) than before (a 12x increase).
 ## Notes
 Although the test scene has no Houdini assets, the problem also occurs if there are Houdini assets in the scene.
 
+Also, this problem does not occur if the cook is run from the command line like so:
+
+  C:\UnrealEngine\UE_4.21\Engine\Binaries\Win64\UE4Editor-Cmd.exe E:\code\HoudiniBugs\CookTest\CookTest.uproject -run=Cook  -TargetPlatform=WindowsNoEditor -fileopenlog -unversioned -stdout -CrashForUAT -UTF8Output
+
+The problem only occurs when the cook is run from the editor.
+
 ## Configuration
 - Windows 10 Pro 1809
 - Unreal Engine 4.21.2
