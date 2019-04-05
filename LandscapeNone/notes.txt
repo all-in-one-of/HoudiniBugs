@@ -1,0 +1,268 @@
+Houdini None Terrain Bug Notes
+
+
+###################################
+# Steps to Repro
+###################################
+
+1. Open LandscapeNone.uproject. When prompted, build.
+2. Confirm "NewMap" is loaded in level editor.
+3. Drag testterrain from Content into NewMap
+4. Move testterrain to location 0, 0, 0
+5. Confirm testterrain has snow (white), rocks (dark gray), and dirt (brown) painted properly.
+6. In UE4 Modes tab, select Landscape > Paint and confirm Layers dirt, snow, and rock are set to automatically generated Houdini LayerInfos.
+7. File > Save All
+8. Play (1 player, dedicated server UNCHECKED)
+9. ESC to stop.
+10. Confirm no warnings/errors in Output Log, other than standard Houdini warnings about uassets saved with empty engine version and warning about LandscapeNone module (which was logged because we had to build the C++ project in step 1).
+11. In UE4 Modes, select Landscape > Paint.
+
+####################
+# RESULT
+####################
+
+All layers are now set to None.
+
+Additionally the following exception is logged in Output Log:
+
+LogOutputDevice: Warning: Script Stack (0 frames):
+LogOutputDevice: Error: === Handled ensure: ===
+LogOutputDevice: Error: Ensure condition failed: !FPackageName::IsShortPackageName(Path) [File:D:\Build\++UE4\Sync\Engine\Source\Runtime\CoreUObject\Private\UObject\SoftObjectPath.cpp] [Line: 46]
+LogOutputDevice: Error: Cannot create SoftObjectPath with short package name 'None.testterrain8BBD0623407E_LayerInfoObject_dirt'! You must pass in fully qualified package names
+LogOutputDevice: Error: Stack: 
+LogOutputDevice: Error: [Callstack] 0x00007ffd606954cc UE4Editor-CoreUObject.dll!FSoftObjectPath::SetPath() [d:\build\++ue4\sync\engine\source\runtime\coreuobject\private\uobject\softobjectpath.cpp:46]
+LogOutputDevice: Error: [Callstack] 0x00007ffd602b384f UE4Editor-CoreUObject.dll!FSoftObjectPath::FSoftObjectPath() [d:\build\++ue4\sync\engine\source\runtime\coreuobject\public\uobject\softobjectpath.h:37]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49d2e7d4 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::GetValue() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:897]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49d2b703 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::GetOnBrowseToolTip() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:1044]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49d113b7 UE4Editor-PropertyEditor.dll!TBaseSPMethodDelegateInstance<1,SPropertyEditorAsset,0,FText __cdecl(void)>::Execute() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:279]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49b09824 UE4Editor-PropertyEditor.dll!TAttribute<FText>::Get() [d:\build\++ue4\sync\engine\source\runtime\core\public\misc\attribute.h:137]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49b45f8d UE4Editor-PropertyEditor.dll!PropertyCustomizationHelpers::MakeBrowseButton() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\propertycustomizationhelpers.cpp:201]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49cde6e5 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::Construct() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:483]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49a4dc9f UE4Editor-PropertyEditor.dll!TDecl<SPropertyEditorAsset,RequiredArgs::T0RequiredArgs>::operator<<=() [d:\build\++ue4\sync\engine\source\runtime\slatecore\public\widgets\declarativesyntaxsupport.h:1094]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49abc7a8 UE4Editor-PropertyEditor.dll!SObjectPropertyEntryBox::Construct() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\propertycustomizationhelpers.cpp:490]
+LogOutputDevice: Error: [Callstack] 0x00007ffd2b1e9d57 UE4Editor-LandscapeEditor.dll!TDecl<SObjectPropertyEntryBox,RequiredArgs::T0RequiredArgs>::operator<<=() [d:\build\++ue4\sync\engine\source\runtime\slatecore\public\widgets\declarativesyntaxsupport.h:1094]
+LogOutputDevice: Error: [Callstack] 0x00007ffd2b247465 UE4Editor-LandscapeEditor.dll!FLandscapeEditorCustomNodeBuilder_TargetLayers::GenerateRow() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeeditordetailcustomization_targetlayers.cpp:535]
+LogOutputDevice: Error: [Callstack] 0x00007ffd2b23f75e UE4Editor-LandscapeEditor.dll!FLandscapeEditorCustomNodeBuilder_TargetLayers::GenerateChildContent() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeeditordetailcustomization_targetlayers.cpp:461]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49b59c07 UE4Editor-PropertyEditor.dll!FDetailCustomBuilderRow::OnGenerateChildren() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcustombuilderrow.cpp:61]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49afee92 UE4Editor-PropertyEditor.dll!FDetailItemNode::GenerateChildren() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailitemnode.cpp:369]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49b04e74 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateNodesFromCustomizations() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:679]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49b02767 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateChildrenForSingleLayout() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:701]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49affa36 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateChildrenForLayouts() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:726]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49a73843 UE4Editor-PropertyEditor.dll!FDetailLayoutBuilderImpl::BuildCategories() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detaillayoutbuilderimpl.cpp:183]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49b037f4 UE4Editor-PropertyEditor.dll!FDetailLayoutBuilderImpl::GenerateDetailLayout() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detaillayoutbuilderimpl.cpp:227]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49c93845 UE4Editor-PropertyEditor.dll!SDetailsViewBase::UpdateSinglePropertyMap() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsviewbase.cpp:379]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49c91782 UE4Editor-PropertyEditor.dll!SDetailsViewBase::UpdatePropertyMaps() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsviewbase.cpp:341]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49c5ecd2 UE4Editor-PropertyEditor.dll!SDetailsView::PostSetObject() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:890]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49c7bc99 UE4Editor-PropertyEditor.dll!SDetailsView::SetObjectArrayPrivate() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:643]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49c7d7a3 UE4Editor-PropertyEditor.dll!SDetailsView::SetObjects() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:406]
+LogOutputDevice: Error: [Callstack] 0x00007ffd49c7b340 UE4Editor-PropertyEditor.dll!SDetailsView::SetObject() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:413]
+LogOutputDevice: Error: [Callstack] 0x00007ffd2b2e7c3c UE4Editor-LandscapeEditor.dll!SLandscapeEditor::Construct() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\slandscapeeditor.cpp:323]
+LogOutputDevice: Error: [Callstack] 0x00007ffd2b2ff518 UE4Editor-LandscapeEditor.dll!FLandscapeToolKit::Init() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\slandscapeeditor.cpp:133]
+LogOutputDevice: Error: [Callstack] 0x00007ffd2b23573c UE4Editor-LandscapeEditor.dll!FEdModeLandscape::Enter() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeedmode.cpp:490]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4b3b9a5e UE4Editor-UnrealEd.dll!FEditorModeTools::ActivateMode() [d:\build\++ue4\sync\engine\source\editor\unrealed\private\editormodemanager.cpp:425]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4587000f UE4Editor-LevelEditor.dll!SLevelEditor::ToggleEditorMode() [d:\build\++ue4\sync\engine\source\editor\leveleditor\private\sleveleditor.cpp:1256]
+LogOutputDevice: Error: [Callstack] 0x00007ffd457f4551 UE4Editor-LevelEditor.dll!TBaseStaticDelegateInstance<void __cdecl(void),FName>::ExecuteIfSafe() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:813]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d57226e UE4Editor-Slate.dll!FUICommandList::ExecuteAction() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\commands\uicommandlist.cpp:97]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d6782a2 UE4Editor-Slate.dll!SToolBarButtonBlock::OnClicked() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\multibox\stoolbarbuttonblock.cpp:300]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d676d43 UE4Editor-Slate.dll!SToolBarButtonBlock::OnCheckStateChanged() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\multibox\stoolbarbuttonblock.cpp:325]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d654099 UE4Editor-Slate.dll!TBaseSPMethodDelegateInstance<0,SToolBarButtonBlock,0,void __cdecl(enum ECheckBoxState)>::ExecuteIfSafe() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:355]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d73c95d UE4Editor-Slate.dll!SCheckBox::OnMouseButtonUp() [d:\build\++ue4\sync\engine\source\runtime\slate\private\widgets\input\scheckbox.cpp:191]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d528e25 UE4Editor-Slate.dll!FEventRouter::Route<FReply,FEventRouter::FToLeafmostPolicy,FPointerEvent,<lambda_1002768c627006711ef2f351a87ec0e7> >() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:270]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d5c2678 UE4Editor-Slate.dll!FSlateApplication::RoutePointerUpEvent() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:5528]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d5a857a UE4Editor-Slate.dll!FSlateApplication::ProcessMouseButtonUpEvent() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:6087]
+LogOutputDevice: Error: [Callstack] 0x00007ffd6d59b44c UE4Editor-Slate.dll!FSlateApplication::OnMouseUp() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:6060]
+LogOutputDevice: Error: [Callstack] 0x00007ffd858ede26 UE4Editor-ApplicationCore.dll!FWindowsApplication::ProcessDeferredMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:1831]
+LogOutputDevice: Error: [Callstack] 0x00007ffd858e0de0 UE4Editor-ApplicationCore.dll!FWindowsApplication::DeferMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:2281]
+LogOutputDevice: Error: [Callstack] 0x00007ffd858f01eb UE4Editor-ApplicationCore.dll!FWindowsApplication::ProcessMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:929]
+LogOutputDevice: Error: [Callstack] 0x00007ffd858dca19 UE4Editor-ApplicationCore.dll!FWindowsApplication::AppWndProc() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:766]
+LogOutputDevice: Error: [Callstack] 0x00007ffda3e3ca66 USER32.dll!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffda3e3c582 USER32.dll!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffd858f1746 UE4Editor-ApplicationCore.dll!FWindowsPlatformApplicationMisc::PumpMessages() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsplatformapplicationmisc.cpp:130]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f55546 UE4Editor.exe!FEngineLoop::Tick() [d:\build\++ue4\sync\engine\source\runtime\launch\private\launchengineloop.cpp:3615]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f6596c UE4Editor.exe!GuardedMain() [d:\build\++ue4\sync\engine\source\runtime\launch\private\launch.cpp:174]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f659ea UE4Editor.exe!GuardedMainWrapper() [d:\build\++ue4\sync\engine\source\runtime\launch\private\windows\launchwindows.cpp:145]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f748da UE4Editor.exe!WinMain() [d:\build\++ue4\sync\engine\source\runtime\launch\private\windows\launchwindows.cpp:276]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f7659a UE4Editor.exe!__scrt_common_main_seh() [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl:283]
+LogOutputDevice: Error: [Callstack] 0x00007ffda64881f4 KERNEL32.DLL!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffda688a251 ntdll.dll!UnknownFunction []
+
+
+
+
+
+###################################
+# Observations
+###################################
+
+#7: 
+
+
+#6: Play in editor dedicated server + 2 players then got None bug. Tried to open Paint in UE4 Landscape editor to inspect layers and got None, None, and None and this in the Output Log:
+
+LogLinker: Warning: Asset '../../Plugins/Runtime/HoudiniEngine/Content/houdini_logo.uasset' has been saved with empty engine version. The asset will be loaded but may be incompatible.
+LogLinker: Warning: Asset '../../Plugins/Runtime/HoudiniEngine/Content/houdini_default_material.uasset' has been saved with empty engine version. The asset will be loaded but may be incompatible.
+LogLinker: Warning: Asset '../../Plugins/Runtime/HoudiniEngine/Content/houdini_bgeo_import.uasset' has been saved with empty engine version. The asset will be loaded but may be incompatible.
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogOnlineSession: Warning: OSS: No game present to join for session (GameSession)
+LogOnlineSession: Warning: OSS: No game present to join for session (GameSession)
+LogOnlineSession: Warning: OSS: No game present to join for session (GameSession)
+LogOnlineSession: Warning: OSS: No game present to join for session (GameSession)
+LogOnlineSession: Warning: OSS: No game present to join for session (GameSession)
+LogOnlineSession: Warning: OSS: No game present to join for session (GameSession)
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogOutputDevice: Warning: Script Stack (0 frames):
+LogOutputDevice: Error: === Handled ensure: ===
+LogOutputDevice: Error: Ensure condition failed: !FPackageName::IsShortPackageName(Path) [File:D:\Build\++UE4\Sync\Engine\Source\Runtime\CoreUObject\Private\UObject\SoftObjectPath.cpp] [Line: 46]
+LogOutputDevice: Error: Cannot create SoftObjectPath with short package name 'None.testterrain55FE0275477E_LayerInfoObject_dirt'! You must pass in fully qualified package names
+LogOutputDevice: Error: Stack: 
+LogOutputDevice: Error: [Callstack] 0x00007ffd544b54cc UE4Editor-CoreUObject.dll!FSoftObjectPath::SetPath() [d:\build\++ue4\sync\engine\source\runtime\coreuobject\private\uobject\softobjectpath.cpp:46]
+LogOutputDevice: Error: [Callstack] 0x00007ffd540d384f UE4Editor-CoreUObject.dll!FSoftObjectPath::FSoftObjectPath() [d:\build\++ue4\sync\engine\source\runtime\coreuobject\public\uobject\softobjectpath.h:37]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bbde7d4 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::GetValue() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:897]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bbdb703 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::GetOnBrowseToolTip() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:1044]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bbc13b7 UE4Editor-PropertyEditor.dll!TBaseSPMethodDelegateInstance<1,SPropertyEditorAsset,0,FText __cdecl(void)>::Execute() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:279]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b9b9824 UE4Editor-PropertyEditor.dll!TAttribute<FText>::Get() [d:\build\++ue4\sync\engine\source\runtime\core\public\misc\attribute.h:137]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b9f5f8d UE4Editor-PropertyEditor.dll!PropertyCustomizationHelpers::MakeBrowseButton() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\propertycustomizationhelpers.cpp:201]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bb8e6e5 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::Construct() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:483]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b8fdc9f UE4Editor-PropertyEditor.dll!TDecl<SPropertyEditorAsset,RequiredArgs::T0RequiredArgs>::operator<<=() [d:\build\++ue4\sync\engine\source\runtime\slatecore\public\widgets\declarativesyntaxsupport.h:1094]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b96c7a8 UE4Editor-PropertyEditor.dll!SObjectPropertyEntryBox::Construct() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\propertycustomizationhelpers.cpp:490]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26b49d57 UE4Editor-LandscapeEditor.dll!TDecl<SObjectPropertyEntryBox,RequiredArgs::T0RequiredArgs>::operator<<=() [d:\build\++ue4\sync\engine\source\runtime\slatecore\public\widgets\declarativesyntaxsupport.h:1094]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26ba7465 UE4Editor-LandscapeEditor.dll!FLandscapeEditorCustomNodeBuilder_TargetLayers::GenerateRow() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeeditordetailcustomization_targetlayers.cpp:535]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26b9f75e UE4Editor-LandscapeEditor.dll!FLandscapeEditorCustomNodeBuilder_TargetLayers::GenerateChildContent() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeeditordetailcustomization_targetlayers.cpp:461]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3ba09c07 UE4Editor-PropertyEditor.dll!FDetailCustomBuilderRow::OnGenerateChildren() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcustombuilderrow.cpp:61]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b9aee92 UE4Editor-PropertyEditor.dll!FDetailItemNode::GenerateChildren() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailitemnode.cpp:369]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b9b4e74 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateNodesFromCustomizations() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:679]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b9b2767 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateChildrenForSingleLayout() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:701]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b9afa36 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateChildrenForLayouts() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:726]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b923843 UE4Editor-PropertyEditor.dll!FDetailLayoutBuilderImpl::BuildCategories() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detaillayoutbuilderimpl.cpp:183]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3b9b37f4 UE4Editor-PropertyEditor.dll!FDetailLayoutBuilderImpl::GenerateDetailLayout() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detaillayoutbuilderimpl.cpp:227]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bb43845 UE4Editor-PropertyEditor.dll!SDetailsViewBase::UpdateSinglePropertyMap() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsviewbase.cpp:379]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bb41782 UE4Editor-PropertyEditor.dll!SDetailsViewBase::UpdatePropertyMaps() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsviewbase.cpp:341]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bb0ecd2 UE4Editor-PropertyEditor.dll!SDetailsView::PostSetObject() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:890]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bb2bc99 UE4Editor-PropertyEditor.dll!SDetailsView::SetObjectArrayPrivate() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:643]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bb2d7a3 UE4Editor-PropertyEditor.dll!SDetailsView::SetObjects() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:406]
+LogOutputDevice: Error: [Callstack] 0x00007ffd3bb2b340 UE4Editor-PropertyEditor.dll!SDetailsView::SetObject() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:413]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26c72e2a UE4Editor-LandscapeEditor.dll!SLandscapeEditor::RefreshDetailPanel() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\slandscapeeditor.cpp:531]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26bf5201 UE4Editor-LandscapeEditor.dll!FEdModeLandscape::SetCurrentTool() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeedmode.cpp:1952]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26bf560d UE4Editor-LandscapeEditor.dll!FEdModeLandscape::SetCurrentTool() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeedmode.cpp:1867]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26bf58d9 UE4Editor-LandscapeEditor.dll!FEdModeLandscape::SetCurrentToolMode() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeedmode.cpp:1827]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26c72108 UE4Editor-LandscapeEditor.dll!FLandscapeToolKit::OnChangeMode() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\slandscapeeditor.cpp:180]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26c500af UE4Editor-LandscapeEditor.dll!TBaseSPMethodDelegateInstance<0,FLandscapeToolKit,0,void __cdecl(void),FName>::ExecuteIfSafe() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:355]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a0b226e UE4Editor-Slate.dll!FUICommandList::ExecuteAction() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\commands\uicommandlist.cpp:97]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a1b82a2 UE4Editor-Slate.dll!SToolBarButtonBlock::OnClicked() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\multibox\stoolbarbuttonblock.cpp:300]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a1b6d43 UE4Editor-Slate.dll!SToolBarButtonBlock::OnCheckStateChanged() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\multibox\stoolbarbuttonblock.cpp:325]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a194099 UE4Editor-Slate.dll!TBaseSPMethodDelegateInstance<0,SToolBarButtonBlock,0,void __cdecl(enum ECheckBoxState)>::ExecuteIfSafe() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:355]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a27c95d UE4Editor-Slate.dll!SCheckBox::OnMouseButtonUp() [d:\build\++ue4\sync\engine\source\runtime\slate\private\widgets\input\scheckbox.cpp:191]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a068e25 UE4Editor-Slate.dll!FEventRouter::Route<FReply,FEventRouter::FToLeafmostPolicy,FPointerEvent,<lambda_1002768c627006711ef2f351a87ec0e7> >() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:270]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a102678 UE4Editor-Slate.dll!FSlateApplication::RoutePointerUpEvent() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:5528]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a0e857a UE4Editor-Slate.dll!FSlateApplication::ProcessMouseButtonUpEvent() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:6087]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a0db44c UE4Editor-Slate.dll!FSlateApplication::OnMouseUp() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:6060]
+LogOutputDevice: Error: [Callstack] 0x00007ffd7d18de26 UE4Editor-ApplicationCore.dll!FWindowsApplication::ProcessDeferredMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:1831]
+LogOutputDevice: Error: [Callstack] 0x00007ffd7d180de0 UE4Editor-ApplicationCore.dll!FWindowsApplication::DeferMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:2281]
+LogOutputDevice: Error: [Callstack] 0x00007ffd7d1901eb UE4Editor-ApplicationCore.dll!FWindowsApplication::ProcessMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:929]
+LogOutputDevice: Error: [Callstack] 0x00007ffd7d17ca19 UE4Editor-ApplicationCore.dll!FWindowsApplication::AppWndProc() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:766]
+LogOutputDevice: Error: [Callstack] 0x00007ffda3e3ca66 USER32.dll!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffda3e3c582 USER32.dll!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffd7d191746 UE4Editor-ApplicationCore.dll!FWindowsPlatformApplicationMisc::PumpMessages() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsplatformapplicationmisc.cpp:130]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f55546 UE4Editor.exe!FEngineLoop::Tick() [d:\build\++ue4\sync\engine\source\runtime\launch\private\launchengineloop.cpp:3615]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f6596c UE4Editor.exe!GuardedMain() [d:\build\++ue4\sync\engine\source\runtime\launch\private\launch.cpp:174]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f659ea UE4Editor.exe!GuardedMainWrapper() [d:\build\++ue4\sync\engine\source\runtime\launch\private\windows\launchwindows.cpp:145]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f748da UE4Editor.exe!WinMain() [d:\build\++ue4\sync\engine\source\runtime\launch\private\windows\launchwindows.cpp:276]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f7659a UE4Editor.exe!__scrt_common_main_seh() [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl:283]
+LogOutputDevice: Error: [Callstack] 0x00007ffda64881f4 KERNEL32.DLL!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffda688a251 ntdll.dll!UnknownFunction []
+
+#5: After fixing #4, no errors on Testterrain import to UE4 level except standard Houdini warnings.
+LogLinker: Warning: Asset '../../Plugins/Runtime/HoudiniEngine/Content/houdini_logo.uasset' has been saved with empty engine version. The asset will be loaded but may be incompatible.
+LogLinker: Warning: Asset '../../Plugins/Runtime/HoudiniEngine/Content/houdini_default_material.uasset' has been saved with empty engine version. The asset will be loaded but may be incompatible.
+LogLinker: Warning: Asset '../../Plugins/Runtime/HoudiniEngine/Content/houdini_bgeo_import.uasset' has been saved with empty engine version. The asset will be loaded but may be incompatible.
+
+#4: Problem with "dirt" is that it was a constant value, which UE4/Houdini import decides to discard.
+
+#3: Lots of 'None' paths after fixing problem with #2. dirt is still 'None' in UE4 Landscape Editor
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogUObjectGlobals: Warning: Attempted to FindCachedThumbnailInPackage named 'None' - PackageName: None InPackageFileName: None
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogUObjectGlobals: Warning: Attempted to FindCachedThumbnailInPackage named 'None' - PackageName: None InPackageFileName: None
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogUObjectGlobals: Warning: Attempted to FindCachedThumbnailInPackage named 'None' - PackageName: None InPackageFileName: None
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogUObjectGlobals: Warning: Attempted to FindCachedThumbnailInPackage named 'None' - PackageName: None InPackageFileName: None
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogUObjectGlobals: Warning: Attempted to FindCachedThumbnailInPackage named 'None' - PackageName: None InPackageFileName: None
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogUObjectGlobals: Warning: Attempted to FindCachedThumbnailInPackage named 'None' - PackageName: None InPackageFileName: None
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogUObjectGlobals: Warning: Attempted to FindCachedThumbnailInPackage named 'None' - PackageName: None InPackageFileName: None
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+LogUObjectGlobals: Warning: Attempted to FindCachedThumbnailInPackage named 'None' - PackageName: None InPackageFileName: None
+LogPackageName: Error: DoesPackageExist: DoesPackageExist FAILED: 'None' is not a standard unreal filename or a long path name. Reason: Path should start with a '/'
+
+#2: Terrain has black rects/components. This could be from mismtach between UE4 material name "rocks" and houdini volume "rock".
+
+#1: Got this after importing terrain to UE4 and opened Landscape Paint to inspect layers. All layers none at this point.
+
+LogStats: FPlatformStackWalk::StackWalkAndDump -  5.071 s
+LogOutputDevice: Error: === Handled ensure: ===
+LogOutputDevice: Error: Ensure condition failed: !FPackageName::IsShortPackageName(Path) [File:D:\Build\++UE4\Sync\Engine\Source\Runtime\CoreUObject\Private\UObject\SoftObjectPath.cpp] [Line: 46]
+LogOutputDevice: Error: Cannot create SoftObjectPath with short package name 'None.testterrain84EFBC7D4E4A_LayerInfoObject_snow'! You must pass in fully qualified package names
+LogOutputDevice: Error: Stack: 
+LogOutputDevice: Error: [Callstack] 0x00007ffd544b54cc UE4Editor-CoreUObject.dll!FSoftObjectPath::SetPath() [d:\build\++ue4\sync\engine\source\runtime\coreuobject\private\uobject\softobjectpath.cpp:46]
+LogOutputDevice: Error: [Callstack] 0x00007ffd540d384f UE4Editor-CoreUObject.dll!FSoftObjectPath::FSoftObjectPath() [d:\build\++ue4\sync\engine\source\runtime\coreuobject\public\uobject\softobjectpath.h:37]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40f8e7d4 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::GetValue() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:897]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40f8b703 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::GetOnBrowseToolTip() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:1044]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40f713b7 UE4Editor-PropertyEditor.dll!TBaseSPMethodDelegateInstance<1,SPropertyEditorAsset,0,FText __cdecl(void)>::Execute() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:279]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40d69824 UE4Editor-PropertyEditor.dll!TAttribute<FText>::Get() [d:\build\++ue4\sync\engine\source\runtime\core\public\misc\attribute.h:137]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40da5f8d UE4Editor-PropertyEditor.dll!PropertyCustomizationHelpers::MakeBrowseButton() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\propertycustomizationhelpers.cpp:201]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40f3e6e5 UE4Editor-PropertyEditor.dll!SPropertyEditorAsset::Construct() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\userinterface\propertyeditor\spropertyeditorasset.cpp:483]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40cadc9f UE4Editor-PropertyEditor.dll!TDecl<SPropertyEditorAsset,RequiredArgs::T0RequiredArgs>::operator<<=() [d:\build\++ue4\sync\engine\source\runtime\slatecore\public\widgets\declarativesyntaxsupport.h:1094]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40d1c7a8 UE4Editor-PropertyEditor.dll!SObjectPropertyEntryBox::Construct() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\propertycustomizationhelpers.cpp:490]
+LogOutputDevice: Error: [Callstack] 0x00007ffd269c9d57 UE4Editor-LandscapeEditor.dll!TDecl<SObjectPropertyEntryBox,RequiredArgs::T0RequiredArgs>::operator<<=() [d:\build\++ue4\sync\engine\source\runtime\slatecore\public\widgets\declarativesyntaxsupport.h:1094]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26a27465 UE4Editor-LandscapeEditor.dll!FLandscapeEditorCustomNodeBuilder_TargetLayers::GenerateRow() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeeditordetailcustomization_targetlayers.cpp:535]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26a1f75e UE4Editor-LandscapeEditor.dll!FLandscapeEditorCustomNodeBuilder_TargetLayers::GenerateChildContent() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeeditordetailcustomization_targetlayers.cpp:461]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40db9c07 UE4Editor-PropertyEditor.dll!FDetailCustomBuilderRow::OnGenerateChildren() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcustombuilderrow.cpp:61]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40d5ee92 UE4Editor-PropertyEditor.dll!FDetailItemNode::GenerateChildren() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailitemnode.cpp:369]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40d64e74 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateNodesFromCustomizations() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:679]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40d62767 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateChildrenForSingleLayout() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:701]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40d5fa36 UE4Editor-PropertyEditor.dll!FDetailCategoryImpl::GenerateChildrenForLayouts() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detailcategorybuilderimpl.cpp:726]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40cd3843 UE4Editor-PropertyEditor.dll!FDetailLayoutBuilderImpl::BuildCategories() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detaillayoutbuilderimpl.cpp:183]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40d637f4 UE4Editor-PropertyEditor.dll!FDetailLayoutBuilderImpl::GenerateDetailLayout() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\detaillayoutbuilderimpl.cpp:227]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40ef3845 UE4Editor-PropertyEditor.dll!SDetailsViewBase::UpdateSinglePropertyMap() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsviewbase.cpp:379]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40ef1782 UE4Editor-PropertyEditor.dll!SDetailsViewBase::UpdatePropertyMaps() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsviewbase.cpp:341]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40ebecd2 UE4Editor-PropertyEditor.dll!SDetailsView::PostSetObject() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:890]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40edbc99 UE4Editor-PropertyEditor.dll!SDetailsView::SetObjectArrayPrivate() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:643]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40edd7a3 UE4Editor-PropertyEditor.dll!SDetailsView::SetObjects() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:406]
+LogOutputDevice: Error: [Callstack] 0x00007ffd40edb340 UE4Editor-PropertyEditor.dll!SDetailsView::SetObject() [d:\build\++ue4\sync\engine\source\editor\propertyeditor\private\sdetailsview.cpp:413]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26af2e2a UE4Editor-LandscapeEditor.dll!SLandscapeEditor::RefreshDetailPanel() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\slandscapeeditor.cpp:531]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26a75201 UE4Editor-LandscapeEditor.dll!FEdModeLandscape::SetCurrentTool() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeedmode.cpp:1952]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26a7560d UE4Editor-LandscapeEditor.dll!FEdModeLandscape::SetCurrentTool() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeedmode.cpp:1867]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26a758d9 UE4Editor-LandscapeEditor.dll!FEdModeLandscape::SetCurrentToolMode() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\landscapeedmode.cpp:1827]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26af2108 UE4Editor-LandscapeEditor.dll!FLandscapeToolKit::OnChangeMode() [d:\build\++ue4\sync\engine\source\editor\landscapeeditor\private\slandscapeeditor.cpp:180]
+LogOutputDevice: Error: [Callstack] 0x00007ffd26ad00af UE4Editor-LandscapeEditor.dll!TBaseSPMethodDelegateInstance<0,FLandscapeToolKit,0,void __cdecl(void),FName>::ExecuteIfSafe() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:355]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a0b226e UE4Editor-Slate.dll!FUICommandList::ExecuteAction() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\commands\uicommandlist.cpp:97]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a1b82a2 UE4Editor-Slate.dll!SToolBarButtonBlock::OnClicked() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\multibox\stoolbarbuttonblock.cpp:300]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a1b6d43 UE4Editor-Slate.dll!SToolBarButtonBlock::OnCheckStateChanged() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\multibox\stoolbarbuttonblock.cpp:325]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a194099 UE4Editor-Slate.dll!TBaseSPMethodDelegateInstance<0,SToolBarButtonBlock,0,void __cdecl(enum ECheckBoxState)>::ExecuteIfSafe() [d:\build\++ue4\sync\engine\source\runtime\core\public\delegates\delegateinstancesimpl.h:355]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a27c95d UE4Editor-Slate.dll!SCheckBox::OnMouseButtonUp() [d:\build\++ue4\sync\engine\source\runtime\slate\private\widgets\input\scheckbox.cpp:191]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a068e25 UE4Editor-Slate.dll!FEventRouter::Route<FReply,FEventRouter::FToLeafmostPolicy,FPointerEvent,<lambda_1002768c627006711ef2f351a87ec0e7> >() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:270]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a102678 UE4Editor-Slate.dll!FSlateApplication::RoutePointerUpEvent() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:5528]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a0e857a UE4Editor-Slate.dll!FSlateApplication::ProcessMouseButtonUpEvent() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:6087]
+LogOutputDevice: Error: [Callstack] 0x00007ffd4a0db44c UE4Editor-Slate.dll!FSlateApplication::OnMouseUp() [d:\build\++ue4\sync\engine\source\runtime\slate\private\framework\application\slateapplication.cpp:6060]
+LogOutputDevice: Error: [Callstack] 0x00007ffd7a6dde26 UE4Editor-ApplicationCore.dll!FWindowsApplication::ProcessDeferredMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:1831]
+LogOutputDevice: Error: [Callstack] 0x00007ffd7a6d0de0 UE4Editor-ApplicationCore.dll!FWindowsApplication::DeferMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:2281]
+LogOutputDevice: Error: [Callstack] 0x00007ffd7a6e01eb UE4Editor-ApplicationCore.dll!FWindowsApplication::ProcessMessage() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:929]
+LogOutputDevice: Error: [Callstack] 0x00007ffd7a6cca19 UE4Editor-ApplicationCore.dll!FWindowsApplication::AppWndProc() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsapplication.cpp:766]
+LogOutputDevice: Error: [Callstack] 0x00007ffda3e3ca66 USER32.dll!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffda3e3c582 USER32.dll!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffd7a6e1746 UE4Editor-ApplicationCore.dll!FWindowsPlatformApplicationMisc::PumpMessages() [d:\build\++ue4\sync\engine\source\runtime\applicationcore\private\windows\windowsplatformapplicationmisc.cpp:130]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f55546 UE4Editor.exe!FEngineLoop::Tick() [d:\build\++ue4\sync\engine\source\runtime\launch\private\launchengineloop.cpp:3615]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f6596c UE4Editor.exe!GuardedMain() [d:\build\++ue4\sync\engine\source\runtime\launch\private\launch.cpp:174]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f659ea UE4Editor.exe!GuardedMainWrapper() [d:\build\++ue4\sync\engine\source\runtime\launch\private\windows\launchwindows.cpp:145]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f748da UE4Editor.exe!WinMain() [d:\build\++ue4\sync\engine\source\runtime\launch\private\windows\launchwindows.cpp:276]
+LogOutputDevice: Error: [Callstack] 0x00007ff683f7659a UE4Editor.exe!__scrt_common_main_seh() [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl:283]
+LogOutputDevice: Error: [Callstack] 0x00007ffda64881f4 KERNEL32.DLL!UnknownFunction []
+LogOutputDevice: Error: [Callstack] 0x00007ffda688a251 ntdll.dll!UnknownFunction []
