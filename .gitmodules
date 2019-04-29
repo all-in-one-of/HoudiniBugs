@@ -1,0 +1,3 @@
+[submodule "TravelCrash/Plugins/HoudiniEngineForUnreal"]
+	path = TravelCrash/Plugins/HoudiniEngineForUnreal
+	url = git@github.com:RecklessCowboys/HoudiniEngineForUnreal.git
