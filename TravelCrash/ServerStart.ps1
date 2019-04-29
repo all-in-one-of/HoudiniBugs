@@ -1,6 +1,6 @@
 param (
 	[string]$Port = "7777",
-	[string]$Map = "Concord",
+	[string]$Map = "NewMap",
 	[switch]$PurgeLog
 )
 
