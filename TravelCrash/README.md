@@ -7,7 +7,7 @@ Crash occurs in HoudiniEngine plugin when server travel.
   .\ServerStart.ps1
 
 ### Result
-The following crash occurs:
+The server crashes. The output logs will be in a timestamped files under `.\Saved\Logs\Server_TIMESTAMP>.txt`. The stack trace of the crash is:
 
 ```
 [2019.04.29-17.39.45:458][119]LogWorld: SeamlessTravel to: /Game/NewMap
