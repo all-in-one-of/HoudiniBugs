@@ -10,5 +10,8 @@ public class UE4PluginIWYUEditorTarget : TargetRules
 		Type = TargetType.Editor;
 
 		ExtraModuleNames.AddRange( new string[] { "UE4PluginIWYU" } );
-	}
+
+        bUseUnityBuild = false;
+        bUsePCHFiles = false;
+    }
 }
