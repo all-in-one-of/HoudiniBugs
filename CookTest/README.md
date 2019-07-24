@@ -3,12 +3,21 @@ Enabling the Houdini Engine plugin in an Unreal Project increases the cook time 
 when no Houdini assets are in use.
 
 ## Steps to Reproduce
-1. Open project.
-2. Cook using File > Cook Content for Windows
-3. Note how long it took. On my machine 10.78 seconds (used a stopwatch) and the Cook commandlet ran in 9.0539946s (according to log file).
-4. Enable the Houdini plugin with Edit > Plugins. Restart when prompted.
-5. Cook using File > Cook Content for Windows
-6. Note how long it took.
+1. Clone this repository:
+
+	git clone https://github.com/drichardson/HoudiniBugs.git
+
+2. Checkout the HoudiniEngineForUnreal submodule:
+
+	cd HoudiniBugs/CookTest
+	git submodule update --init
+	
+3. Open project.
+4. Cook using File > Cook Content for Windows
+5. Note how long it took. On my machine 10.78 seconds (used a stopwatch) and the Cook commandlet ran in 9.0539946s (according to log file).
+6. Enable the Houdini plugin with Edit > Plugins. Restart when prompted.
+7. Cook using File > Cook Content for Windows
+8. Note how long it took.
 
 ## Results
 When Houdini Plugin is enabled, the cook time increased to 133.55 seconds.
