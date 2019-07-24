@@ -5,12 +5,16 @@ when no Houdini assets are in use.
 ## Steps to Reproduce
 1. Clone this repository:
 
-	git clone https://github.com/drichardson/HoudiniBugs.git
+```
+git clone https://github.com/drichardson/HoudiniBugs.git
+```
 
 2. Checkout the HoudiniEngineForUnreal submodule:
 
-	cd HoudiniBugs/CookTest
-	git submodule update --init
+```
+cd HoudiniBugs/CookTest
+git submodule update --init
+```
 	
 3. Open project.
 4. Cook using File > Cook Content for Windows
