@@ -1,3 +1,6 @@
 [submodule "UE4PluginIWYU/Plugins/HoudiniEngineForUnreal"]
 	path = UE4PluginIWYU/Plugins/HoudiniEngineForUnreal
 	url = git@github.com:RecklessCowboys/HoudiniEngineForUnreal.git
+[submodule "CookTest/Plugins/HoudiniEngineForUnreal"]
+	path = CookTest/Plugins/HoudiniEngineForUnreal
+	url = https://github.com/sideeffects/HoudiniEngineForUnreal.git
